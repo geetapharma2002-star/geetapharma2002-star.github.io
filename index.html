@@ -880,6 +880,7 @@ Aapka Bharosemand Medical
 </footer>
 
 <script>
+<script>
 function searchMedicine() {
   const input = document.getElementById("medicineSearch").value.toLowerCase().trim();
   const results = document.getElementById("medicineResults");
@@ -891,8 +892,16 @@ function searchMedicine() {
     return;
   }
 
+  if (typeof medicines === "undefined") {
+    message.innerHTML = "⚠️ Medicine list load नहीं हुई।";
+    results.innerHTML = "";
+    return;
+  }
+
   const found = medicines
-    .filter(item => item.name.toLowerCase().includes(input))
+    .filter(item =>
+      String(item.name || "").toLowerCase().includes(input)
+    )
     .slice(0, 20);
 
   if (found.length === 0) {
@@ -912,20 +921,27 @@ function searchMedicine() {
       box-shadow:0 5px 18px #087f8c18;
       border:1px solid #dceff1;
     ">
-      <h3 style="color:#08727c;margin-bottom:6px;">💊 ${item.name}</h3>
+      <h3 style="color:#08727c;margin:0 0 8px;">
+        💊 ${item.name || "Medicine"}
+      </h3>
+
       <p style="margin:4px 0;color:#607487;">
         Manufacturer: ${item.manufacturer || "N/A"}
       </p>
+
       <p style="margin:4px 0;color:#607487;">
         MRP: ₹${item.mrp || "N/A"}
       </p>
+
       <p style="margin:4px 0;color:#607487;">
         Stock: ${item.stock || "N/A"}
       </p>
 
       <a
         href="https://wa.me/917464913080?text=${encodeURIComponent(
-          "Namaste Geeta Pharma, mujhe " + item.name + " ki availability aur price puchni hai."
+          "Namaste Geeta Pharma, mujhe " +
+          (item.name || "ye medicine") +
+          " ki availability aur price puchni hai."
         )}"
         target="_blank"
         style="
@@ -938,7 +954,9 @@ function searchMedicine() {
           border-radius:25px;
           font-weight:bold;
         "
-      >📲 WhatsApp पर पूछें</a>
+      >
+        📲 WhatsApp पर पूछें
+      </a>
     </div>
   `).join("");
 }
