@@ -865,58 +865,25 @@ Aapka Bharosemand Medical
 </div>
 
 </footer>
-  
-<script>
+
 <script>
 function searchMedicine() {
 
 let input = document.getElementById("medicineSearch").value.toLowerCase().trim();
-let message = document.getElementById("searchMessage");
-let resultBox = document.getElementById("searchResults");
+let cards = document.querySelectorAll("#products .card");
+let found = 0;
 
-if (!resultBox) {
-    resultBox = document.createElement("div");
-    resultBox.id = "searchResults";
-    resultBox.style.marginTop = "15px";
-    resultBox.style.textAlign = "left";
-    document.getElementById("medicineSearch").parentElement.appendChild(resultBox);
+cards.forEach(function(card) {
+
+let text = card.innerText.toLowerCase();
+
+if (input === "" || text.includes(input)) {
+card.style.display = "";
+found++;
+} else {
+card.style.display = "none";
 }
 
-if (input === "") {
-    message.innerHTML = "";
-    resultBox.innerHTML = "";
-    return;
-}
-
-let matches = geetaProducts.filter(function(product) {
-    return product.name.toLowerCase().includes(input);
-}).slice(0, 20);
-
-if (matches.length === 0) {
-
-    message.innerHTML = "❌ Product नहीं मिला। WhatsApp पर पूछें।";
-
-    resultBox.innerHTML = `
-    <a href="https://wa.me/917464913080?text=Namaste%20Geeta%20Pharma%2C%20mujhe%20${encodeURIComponent(input)}%20ki%20availability%20puchni%20hai."
-       target="_blank"
-       style="display:inline-block;background:#087f8c;color:white;padding:12px 18px;border-radius:25px;text-decoration:none;font-weight:600;">
-       📲 WhatsApp पर पूछें
-    </a>`;
-
-    return;
-}
-
-message.innerHTML = "✅ " + matches.length + " matching product मिले।";
-
-resultBox.innerHTML = matches.map(function(product) {
-    return `
-    <div style="background:white;padding:12px 15px;margin:8px 0;border-radius:12px;box-shadow:0 4px 12px #00000010;">
-        <strong>${product.name}</strong>
-    </div>`;
-}).join("");
-
-}
-</script>
 });
 
 let message = document.getElementById("searchMessage");
