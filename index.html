@@ -880,7 +880,6 @@ Aapka Bharosemand Medical
 </footer>
 
 <script>
-<script>
 function searchMedicine() {
   const input = document.getElementById("medicineSearch").value.toLowerCase().trim();
   const results = document.getElementById("medicineResults");
@@ -898,7 +897,7 @@ function searchMedicine() {
     return;
   }
 
-  const found = medicines
+  const found = geetaproducts
     .filter(item =>
       String(item.name || "").toLowerCase().includes(input)
     )
