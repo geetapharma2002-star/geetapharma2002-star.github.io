@@ -879,7 +879,6 @@ Aapka Bharosemand Medical
 </footer>
 
 <script>
-<script>
 function searchMedicine() {
     const input = document.getElementById("medicineSearch").value
         .toLowerCase()
@@ -952,58 +951,6 @@ function searchMedicine() {
         </div>
         `;
     }).join("");
-}
-</script>
-
-  message.innerHTML = "✅ " + found.length + " Medicine मिली।";
-
-  results.innerHTML = found.map(item => `
-    <div style="
-      background:white;
-      padding:18px;
-      margin-bottom:12px;
-      border-radius:16px;
-      box-shadow:0 5px 18px #087f8c18;
-      border:1px solid #dceff1;
-    ">
-      <h3 style="color:#08727c;margin:0 0 8px;">
-        💊 ${item.name || "Medicine"}
-      </h3>
-
-      <p style="margin:4px 0;color:#607487;">
-        Manufacturer: ${item.manufacturer || "N/A"}
-      </p>
-
-      <p style="margin:4px 0;color:#607487;">
-        MRP: ₹${item.mrp || "N/A"}
-      </p>
-
-      <p style="margin:4px 0;color:#607487;">
-        Stock: ${item.stock || "N/A"}
-      </p>
-
-      <a
-        href="https://wa.me/917464913080?text=${encodeURIComponent(
-          "Namaste Geeta Pharma, mujhe " +
-          (item.name || "ye medicine") +
-          " ki availability aur price puchni hai."
-        )}"
-        target="_blank"
-        style="
-          display:inline-block;
-          margin-top:10px;
-          background:#087f8c;
-          color:white;
-          text-decoration:none;
-          padding:9px 16px;
-          border-radius:25px;
-          font-weight:bold;
-        "
-      >
-        📲 WhatsApp पर पूछें
-      </a>
-    </div>
-  `).join("");
 }
 </script>
 
