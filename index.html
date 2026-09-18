@@ -887,7 +887,7 @@ function searchMedicine() {
     const message = document.getElementById("searchMessage");
 
     // Medicine list check
-    if (typeof medicines === "undefined") {
+    if (typeof geetaproducts === "undefined") {
         message.innerHTML = "⚠️ Medicine list load नहीं हुई।";
         return;
     }
@@ -897,7 +897,7 @@ function searchMedicine() {
         return;
     }
 
-    const results = medicines.filter(function(item) {
+    const results = geetaproducts.filter(function(item) {
         const name = String(item.name || "").toLowerCase();
         const code = String(item.code || "").toLowerCase();
         const manufacturer = String(item.manufacturer || "").toLowerCase();
