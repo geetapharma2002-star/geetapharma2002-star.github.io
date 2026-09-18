@@ -879,34 +879,81 @@ Aapka Bharosemand Medical
 </footer>
 
 <script>
+<script>
 function searchMedicine() {
-  const input = document.getElementById("medicineSearch").value.toLowerCase().trim();
-  const results = document.getElementById("medicineResults");
-  const message = document.getElementById("searchMessage");
+    const input = document.getElementById("medicineSearch").value
+        .toLowerCase()
+        .trim();
 
-  if (input === "") {
-    results.innerHTML = "";
-    message.innerHTML = "";
-    return;
-  }
+    const message = document.getElementById("searchMessage");
 
-  if (typeof geetaproducts === "undefined") {
-    message.innerHTML = "⚠️ Medicine list load नहीं हुई।";
-    results.innerHTML = "";
-    return;
-  }
+    // Medicine list check
+    if (typeof medicines === "undefined") {
+        message.innerHTML = "⚠️ Medicine list load नहीं हुई।";
+        return;
+    }
 
-  const found = geetaproducts
-    .filter(item =>
-      String(item.name || "").toLowerCase().includes(input)
-    )
-    .slice(0, 20);
+    if (input === "") {
+        message.innerHTML = "";
+        return;
+    }
 
-  if (found.length === 0) {
-    message.innerHTML = "❌ Medicine नहीं मिली। WhatsApp पर पूछें।";
-    results.innerHTML = "";
-    return;
-  }
+    const results = medicines.filter(function(item) {
+        const name = String(item.name || "").toLowerCase();
+        const code = String(item.code || "").toLowerCase();
+        const manufacturer = String(item.manufacturer || "").toLowerCase();
+
+        return name.includes(input) ||
+               code.includes(input) ||
+               manufacturer.includes(input);
+    });
+
+    if (results.length === 0) {
+        message.innerHTML =
+            "❌ Medicine नहीं मिली। WhatsApp पर पूछें।";
+        return;
+    }
+
+    message.innerHTML =
+        "✅ " + results.length + " Medicine/Product मिली।";
+
+    let box = document.getElementById("medicineResults");
+
+    if (!box) {
+        box = document.createElement("div");
+        box.id = "medicineResults";
+        box.style.cssText =
+            "max-width:850px;margin:20px auto;padding:10px;";
+        document.getElementById("medicineSearch")
+            .parentElement.appendChild(box);
+    }
+
+    box.innerHTML = results.slice(0, 50).map(function(item) {
+        return `
+        <div style="
+            background:white;
+            margin:10px 0;
+            padding:16px;
+            border-radius:14px;
+            text-align:left;
+            box-shadow:0 4px 15px #00000012;
+            border:1px solid #d9eeee;
+        ">
+            <div style="font-size:18px;font-weight:700;color:#08727c;">
+                ${item.name || "Product"}
+            </div>
+            <div style="margin-top:7px;color:#496276;">
+                Code: ${item.code || "-"} 
+                &nbsp; | &nbsp;
+                Stock: ${item.stock ?? "-"}
+                &nbsp; | &nbsp;
+                MRP: ₹${item.mrp ?? "-"}
+            </div>
+        </div>
+        `;
+    }).join("");
+}
+</script>
 
   message.innerHTML = "✅ " + found.length + " Medicine मिली।";
 
