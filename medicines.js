@@ -6558,3 +6558,9 @@ const geetaProducts = [
     "code": "GL2701"
   }
 ];
+// Salt search
+if (typeof saltMap !== "undefined") {
+  medicines.forEach(function(item) {
+    item.salt = saltMap[String(item.code || "").trim()] || "";
+  });
+}
