@@ -827,6 +827,7 @@ style="width:100%;padding:16px;background:#0a8f7a;color:white;border:none;border
 </section>
 
 <script>
+```js
 function searchMedicine() {
     const input = document.getElementById("medicineSearch").value.trim().toLowerCase();
     const message = document.getElementById("searchMessage");
@@ -842,7 +843,15 @@ function searchMedicine() {
         const name = String(item.name || "").toLowerCase();
         const code = String(item.code || "").toLowerCase();
 
-        return name.includes(input) || code.includes(input);
+        const salt = String(
+            typeof saltMap !== "undefined"
+                ? saltMap[String(item.code || "").trim()] || ""
+                : ""
+        ).toLowerCase();
+
+        return name.includes(input) ||
+               code.includes(input) ||
+               salt.includes(input);
     });
 
     if (results.length === 0) {
@@ -854,9 +863,16 @@ function searchMedicine() {
     message.innerHTML = "✅ " + results.length + " Medicine मिली।";
 
     box.innerHTML = results.slice(0, 50).map(function(item) {
+        const salt = String(
+            typeof saltMap !== "undefined"
+                ? saltMap[String(item.code || "").trim()] || "-"
+                : "-"
+        );
+
         return `
         <div style="padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;">
             <b>${item.name || "Product"}</b><br>
+            Salt: ${salt}<br>
             Code: ${item.code || "-"} |
             Stock: ${item.stock ?? "-"}
         </div>
