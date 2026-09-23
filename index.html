@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
 
-<script src="medicines.js"></script>
+<script src="geeta_pharma_products.js"></script>
 <script src="geeta_salt_map.js"></script>
 
 <meta name="google-site-verification" content="XGn2kx9mmDBOMvr2m_Sbs72v3uPWyS9XNXp_lJb7ZRQ" />
@@ -827,25 +827,10 @@ style="width:100%;padding:16px;background:#0a8f7a;color:white;border:none;border
 </section>
 
 <script>
-<script>
 function searchMedicine() {
-    const input = document.getElementById("medicineSearch").value
-        .toLowerCase()
-        .trim();
-
+    const input = document.getElementById("medicineSearch").value.trim().toLowerCase();
     const message = document.getElementById("searchMessage");
     const box = document.getElementById("searchResults");
-
-    const products =
-        typeof geetaProducts !== "undefined"
-        ? geetaProducts
-        : (typeof medicines !== "undefined" ? medicines : []);
-
-    if (!products.length) {
-        message.innerHTML = "⚠️ Medicine list load नहीं हुई।";
-        box.innerHTML = "";
-        return;
-    }
 
     if (!input) {
         message.innerHTML = "";
@@ -853,68 +838,39 @@ function searchMedicine() {
         return;
     }
 
-    const results = products.filter(function(item) {
-
+    const results = geetaProducts.filter(function(item) {
         const name = String(item.name || "").toLowerCase();
         const code = String(item.code || "").toLowerCase();
-        const manufacturer = String(item.manufacturer || "").toLowerCase();
 
-        const salt =
-            typeof saltMap !== "undefined"
-            ? String(saltMap[String(item.code || "").trim()] || "").toLowerCase()
-            : "";
+        const salt = String(
+            (typeof saltMap !== "undefined" ? saltMap[String(item.code || "").trim()] : "") || ""
+        ).toLowerCase();
 
         return name.includes(input) ||
-               salt.includes(input) ||
                code.includes(input) ||
-               manufacturer.includes(input);
+               salt.includes(input);
     });
 
-    if (!results.length) {
+    if (results.length === 0) {
         message.innerHTML = "❌ Medicine नहीं मिली।";
         box.innerHTML = "";
         return;
     }
 
-    message.innerHTML =
-        "✅ " + results.length + " Medicine/Product मिली।";
+    message.innerHTML = "✅ " + results.length + " Medicine मिली।";
 
     box.innerHTML = results.slice(0, 50).map(function(item) {
-
-        const medicineName = item.name || "Product";
-
-        const whatsappMessage = encodeURIComponent(
-            "Namaste Geeta Pharma, mujhe " +
-            medicineName +
-            " ki availability aur price puchni hai."
-        );
-
         return `
-        <div style="background:white;margin:10px 0;padding:16px;border-radius:14px;text-align:left;box-shadow:0 4px 15px #00000012;border:1px solid #d9eeee;">
-
-            <div style="font-size:18px;font-weight:700;color:#08727c;">
-                ${medicineName}
-            </div>
-
-            <div style="margin-top:7px;color:#496276;">
-                Code: ${item.code || "-"}
-                &nbsp; | &nbsp;
-                Stock: ${item.stock ?? "-"}
-                &nbsp; | &nbsp;
-                MRP: ₹${item.mrp ?? "-"}
-            </div>
-
-            <a href="https://wa.me/917464913080?text=${whatsappMessage}"
-               target="_blank"
-               style="display:inline-block;margin-top:12px;padding:10px 17px;background:#25D366;color:white;text-decoration:none;border-radius:8px;font-weight:bold;">
-                🟢 WhatsApp पर पूछें
-            </a>
-
+        <div style="padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;">
+            <b>${item.name || "Product"}</b><br>
+            Code: ${item.code || "-"} |
+            Stock: ${item.stock ?? "-"} |
+            MRP: ₹${item.mrp ?? "-"}
         </div>
         `;
     }).join("");
 }
 </script>
-  
+
 </body>
 </html>
