@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
 
-<script src="medicines.js"></script>
+<script src="geeta_pharma_products.js"></script>
 <script src="geeta_salt_map.js"></script>
 
 <meta name="google-site-verification" content="XGn2kx9mmDBOMvr2m_Sbs72v3uPWyS9XNXp_lJb7ZRQ" />
@@ -900,19 +900,27 @@ function searchMedicine() {
     }
 
     const results = geetaProducts.filter(function(item) {
+
         const name = String(item.name || "").toLowerCase();
         const code = String(item.code || "").toLowerCase();
         const manufacturer = String(item.manufacturer || "").toLowerCase();
-        const salt = String(saltMap[item.code] || "").toLowerCase();
 
-        return name.includes(input) ||
-               salt.includes(input) ||
-               code.includes(input) ||
-               manufacturer.includes(input);
+        const salt = (
+            typeof saltMap !== "undefined"
+            ? String(saltMap[String(item.code || "").trim()] || "").toLowerCase()
+            : ""
+        );
+
+        return (
+            name.includes(input) ||
+            salt.includes(input) ||
+            code.includes(input) ||
+            manufacturer.includes(input)
+        );
     });
 
     if (results.length === 0) {
-        message.innerHTML = "❌ Medicine नहीं मिली। WhatsApp पर पूछें।";
+        message.innerHTML = "❌ Medicine नहीं मिली।";
         box.innerHTML = "";
         return;
     }
@@ -921,6 +929,7 @@ function searchMedicine() {
         "✅ " + results.length + " Medicine/Product मिली।";
 
     box.innerHTML = results.slice(0, 50).map(function(item) {
+
         const medicineName = item.name || "Product";
 
         const whatsappMessage = encodeURIComponent(
@@ -930,27 +939,13 @@ function searchMedicine() {
         );
 
         return `
-        <div style="
-            background:white;
-            margin:10px 0;
-            padding:16px;
-            border-radius:14px;
-            text-align:left;
-            box-shadow:0 4px 15px #00000012;
-            border:1px solid #d9eeee;
-        ">
-            <div style="
-                font-size:18px;
-                font-weight:700;
-                color:#08727c;
-            ">
+        <div style="background:#ffffff;border-radius:12px;padding:14px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+
+            <div style="font-size:17px;font-weight:700;color:#087f8c;">
                 ${medicineName}
             </div>
 
-            <div style="
-                margin-top:7px;
-                color:#496276;
-            ">
+            <div style="margin-top:6px;color:#555;font-size:14px;">
                 Code: ${item.code || "-"}
                 &nbsp; | &nbsp;
                 Stock: ${item.stock ?? "-"}
@@ -958,22 +953,11 @@ function searchMedicine() {
                 MRP: ₹${item.mrp || "-"}
             </div>
 
-            <a
-                href="https://wa.me/917464913080?text=${whatsappMessage}"
-                target="_blank"
-                style="
-                    display:inline-block;
-                    margin-top:12px;
-                    padding:10px 17px;
-                    background:#25D366;
-                    color:white;
-                    text-decoration:none;
-                    border-radius:8px;
-                    font-weight:bold;
-                "
-            >
+            <a href="https://wa.me/917464913080?text=${whatsappMessage}"
+               style="display:inline-block;margin-top:10px;background:#25D366;color:white;padding:8px 14px;border-radius:8px;text-decoration:none;">
                 🟢 WhatsApp पर पूछें
             </a>
+
         </div>
         `;
     }).join("");
