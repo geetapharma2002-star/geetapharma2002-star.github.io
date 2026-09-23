@@ -838,22 +838,25 @@ function searchMedicine() {
         return;
     }
 
-    const results = geetaProducts.filter(function(item) {
-        const name = String(item.name || "").toLowerCase();
-        const code = String(item.code || "").toLowerCase();
+  const results = geetaProducts.filter(function(item) {
+    const name = String(item.name || "").toLowerCase();
+    const code = String(item.code || "").toLowerCase();
+    const itemCode = String(item.code || "").trim();
 
-       const salt = String(
-    typeof saltMap !== "undefined" ? saltMap[String(item.code || "").trim()] || "" : ""
-).toLowerCase();
+    const salt = typeof saltMap !== "undefined"
+        ? String(saltMap[itemCode] || "").toLowerCase()
+        : "";
 
-return name.includes(input) || code.includes(input) || salt.includes(input);
-    });
+    return name.includes(input) ||
+           code.includes(input) ||
+           salt.includes(input);
+});
 
-    if (results.length === 0) {
-        message.innerHTML = "❌ Medicine नहीं मिली।";
-        box.innerHTML = "";
-        return;
-    }
+if (results.length === 0) {
+    message.innerHTML = "❌ Medicine नहीं मिली।";
+    box.innerHTML = "";
+    return;
+}
 
     message.innerHTML = "✅ " + results.length + " Medicine मिली।";
 
