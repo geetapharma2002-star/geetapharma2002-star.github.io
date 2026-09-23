@@ -838,17 +838,19 @@ function searchMedicine() {
         return;
     }
 
-    const results = geetaProducts.filter(function(item) {
+    const results = medicines.filter(function(item) {
         const name = String(item.name || "").toLowerCase();
         const code = String(item.code || "").toLowerCase();
 
         const salt = String(
-            (typeof saltMap !== "undefined" ? saltMap[String(item.code || "").trim()] : "") || ""
+            (typeof saltMap !== "undefined"
+                ? saltMap[String(item.code || "").trim()]
+                : "") || ""
         ).toLowerCase();
 
-      return name.includes(input) ||
-       code.includes(input) ||
-       String(item.salt || "").toLowerCase().includes(input);
+        return name.includes(input) ||
+               code.includes(input) ||
+               salt.includes(input);
     });
 
     if (results.length === 0) {
@@ -860,10 +862,14 @@ function searchMedicine() {
     message.innerHTML = "✅ " + results.length + " Medicine मिली।";
 
     box.innerHTML = results.slice(0, 50).map(function(item) {
+        const salt = (typeof saltMap !== "undefined"
+            ? saltMap[String(item.code || "").trim()]
+            : "") || "-";
+
         return `
         <div style="padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;">
             <b>${item.name || "Product"}</b><br>
-            Salt: ${(typeof saltMap !== "undefined" ? saltMap[String(item.code || "").trim()] : "") || "-"}<br>
+            <span>Salt: ${salt}</span><br>
             Code: ${item.code || "-"} |
             Stock: ${item.stock ?? "-"} |
             MRP: ₹${item.mrp ?? "-"}
