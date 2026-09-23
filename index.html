@@ -902,8 +902,10 @@ function searchMedicine() {
         const name = String(item.name || "").toLowerCase();
         const code = String(item.code || "").toLowerCase();
         const manufacturer = String(item.manufacturer || "").toLowerCase();
+        const salt = String(item.salt || "").toLowerCase();
 
         return name.includes(input) ||
+               salt.includes(input) ||
                code.includes(input) ||
                manufacturer.includes(input);
     });
