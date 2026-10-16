@@ -891,5 +891,66 @@ return `
 }
 </script>
 
+<!-- Geeta Pharma Online Order Form -->
+<section id="geeta-online-order" style="max-width:700px;margin:30px auto;padding:22px;background:#f0fbfa;border-radius:16px;font-family:Arial,sans-serif;">
+  <h2 style="color:#087f8c;text-align:center;">🛒 ऑनलाइन दवा ऑर्डर</h2>
+  <p style="text-align:center;">अपनी जानकारी भरें। ऑर्डर की पुष्टि फोन पर की जाएगी।</p>
+
+  <form id="geetaOrderForm">
+    <label>आपका नाम *</label>
+    <input name="name" required maxlength="100" style="width:100%;padding:12px;margin:8px 0 14px;box-sizing:border-box;" />
+
+    <label>मोबाइल नंबर *</label>
+    <input name="phone" type="tel" required pattern="[0-9+ ()-]{10,18}" maxlength="18" style="width:100%;padding:12px;margin:8px 0 14px;box-sizing:border-box;" />
+
+    <label>दवा का नाम और मात्रा *</label>
+    <textarea name="items" required maxlength="2000" rows="4" placeholder="दवा का नाम — मात्रा&#10;उदाहरण: ORS — 2 पैकेट" style="width:100%;padding:12px;margin:8px 0 14px;box-sizing:border-box;"></textarea>
+
+    <label>पता (वैकल्पिक)</label>
+    <textarea name="address" maxlength="500" rows="2" style="width:100%;padding:12px;margin:8px 0 14px;box-sizing:border-box;"></textarea>
+
+    <button id="geetaOrderButton" type="submit" style="width:100%;padding:14px;background:#087f8c;color:white;border:0;border-radius:8px;font-size:17px;cursor:pointer;">
+      ऑर्डर भेजें
+    </button>
+
+    <p id="geetaOrderStatus" role="status" style="margin-top:14px;"></p>
+  </form>
+</section>
+
+<script>
+(function () {
+  const orderUrl = "https://script.google.com/macros/s/AKfycbxp-NrO5UbaDE2LTtuNOrSolZ4AYQskswccPbasIcTXbo2K28Pi2NXNKkmBLaUH1QOl/exec";
+  const form = document.getElementById("geetaOrderForm");
+  if (!form) return;
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const button = document.getElementById("geetaOrderButton");
+    const status = document.getElementById("geetaOrderStatus");
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    button.disabled = true;
+    status.textContent = "ऑर्डर भेजा जा रहा है…";
+
+    try {
+      await fetch(orderUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=UTF-8" },
+        body: JSON.stringify(data)
+      });
+
+      status.textContent = "अनुरोध भेज दिया गया है। कृपया फोन पर ऑर्डर की पुष्टि की प्रतीक्षा करें।";
+      form.reset();
+    } catch (error) {
+      status.textContent = "भेजने में समस्या आई। कृपया WhatsApp पर संपर्क करें।";
+    } finally {
+      button.disabled = false;
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
