@@ -917,10 +917,13 @@ return `
   </form>
 </section>
 
+
 <script>
 (function () {
   const orderUrl = "https://script.google.com/macros/s/AKfycbxp-NrO5UbaDE2LTtuNOrSolZ4AYQskswccPbasIcTXbo2K28Pi2NXNKkmBLaUH1QOl/exec";
+  const whatsappNumber = "917464913080";
   const form = document.getElementById("geetaOrderForm");
+
   if (!form) return;
 
   form.addEventListener("submit", async function (event) {
@@ -930,21 +933,51 @@ return `
     const status = document.getElementById("geetaOrderStatus");
     const data = Object.fromEntries(new FormData(form).entries());
 
+    const message =
+      "Namaste Geeta Pharma! Mujhe dawa ka order dena hai.\n\n" +
+      "Naam: " + data.name + "\n" +
+      "Mobile: " + data.phone + "\n" +
+      "Dawai aur quantity: " + data.items + "\n" +
+      "Pata: " + (data.address || "Nahi diya") + "\n\n" +
+      "Kripya order ki pushti karein.";
+
+    const whatsappUrl =
+      "https://wa.me/" + whatsappNumber +
+      "?text=" + encodeURIComponent(message);
+
+    // Customer ke click par WhatsApp kholne ki koshish
+    const whatsappTab = window.open(whatsappUrl, "_blank");
+
     button.disabled = true;
-    status.textContent = "ऑर्डर भेजा जा रहा है…";
+    status.textContent =
+      "WhatsApp khul raha hai. Wahan Send dabakar order bhejein.";
 
     try {
       await fetch(orderUrl, {
         method: "POST",
         mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=UTF-8" },
+        headers: {
+          "Content-Type": "text/plain;charset=UTF-8"
+        },
         body: JSON.stringify(data)
       });
 
-      status.textContent = "अनुरोध भेज दिया गया है। कृपया फोन पर ऑर्डर की पुष्टि की प्रतीक्षा करें।";
+      status.innerHTML =
+        "Order request bhejne ki koshish ho gayi. " +
+        "WhatsApp par Send zaroor dabayein. " +
+        '<a href="' + whatsappUrl +
+        '" target="_blank" rel="noopener noreferrer">' +
+        "WhatsApp dobara kholein</a>. " +
+        "Google Sheet mein entry verify kar lein.";
+
       form.reset();
+
     } catch (error) {
-      status.textContent = "भेजने में समस्या आई। कृपया WhatsApp पर संपर्क करें।";
+      status.innerHTML =
+        "Order save hone ki pushti nahi hui. " +
+        '<a href="' + whatsappUrl +
+        '" target="_blank" rel="noopener noreferrer">' +
+        "WhatsApp par order bhejein</a> aur Google Sheet check karein.";
     } finally {
       button.disabled = false;
     }
