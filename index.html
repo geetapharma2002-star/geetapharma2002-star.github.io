@@ -1069,6 +1069,22 @@ return `
   renderCart();
   cartMessage.textContent = "✅ " + name + " कार्ट में जुड़ गई।";
 });
+      button.addEventListener("click", function () {
+  const quantity = Number(qty.value);
+
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 999) {
+    cartMessage.textContent = "कृपया मात्रा 1 से 999 के बीच लिखें।";
+    return;
+  }
+
+  cart.set(key, {
+    name: name,
+    qty: quantity
+  });
+
+  renderCart();
+  cartMessage.textContent = "✅ " + name + " कार्ट में जुड़ गई।";
+});
 
       button.style.cssText =
         "margin-left:8px;padding:8px 12px;background:#087f8c;" +
