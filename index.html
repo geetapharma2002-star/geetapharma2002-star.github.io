@@ -987,36 +987,95 @@ return `
 })();
 </script>
 
+
 <script>
 (function () {
   const box = document.getElementById("searchResults");
   const cartField = document.getElementById("geetaCartItems");
   const cartMessage = document.getElementById("geetaCartMessage");
 
-  if (!box || !cartField) return;
+  if (!box || !cartField || !cartMessage) {
+    console.error("Geeta Pharma cart: required elements missing.");
+    return;
+  }
 
   const cart = new Map();
 
   function renderCart() {
     const items = Array.from(cart.values());
+
     cartField.value = items.map(function (item) {
       return item.name + " — मात्रा: " + item.qty;
     }).join("\n");
 
     cartMessage.textContent = items.length
-      ? "कार्ट में " + items.length + " दवा/दवाइयाँ हैं।"
+      ? "✅ कार्ट में " + items.length + " दवा/दवाइयाँ जुड़ी हैं।"
       : "अभी कार्ट खाली है।";
   }
 
+  // Search results mein quantity aur cart button add karein.
+  function decorateCards() {
+    box.querySelectorAll("div").forEach(function (card) {
+      if (card.hasAttribute("data-geeta-card")) return;
+
+      const medicineName = card.querySelector("b");
+      const links = card.querySelectorAll("a");
+
+      if (!medicineName || !links.length) return;
+
+      const name = medicineName.textContent.trim();
+      const text = card.innerText || "";
+      const match = text.match(/Code:\s*([^\s|]+)/);
+      const key = match ? match[1].trim() : name;
+
+      card.setAttribute("data-geeta-card", "1");
+
+      const controls = document.createElement("div");
+      controls.style.marginTop = "10px";
+
+      const label = document.createElement("label");
+      label.textContent = "मात्रा: ";
+
+      const qty = document.createElement("input");
+      qty.type = "number";
+      qty.min = "1";
+      qty.max = "999";
+      qty.step = "1";
+      qty.value = "1";
+      qty.setAttribute("data-geeta-qty", "");
+
+      qty.style.width = "75px";
+      qty.style.padding = "7px";
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = "कार्ट में जोड़ें";
+      button.setAttribute("data-geeta-add", "");
+      button.setAttribute("data-geeta-code", key);
+      button.setAttribute("data-geeta-name", name);
+
+      button.style.cssText =
+        "margin-left:8px;padding:8px 12px;background:#087f8c;" +
+        "color:white;border:0;border-radius:7px;cursor:pointer;";
+
+      label.appendChild(qty);
+      controls.appendChild(label);
+      controls.appendChild(button);
+      card.appendChild(controls);
+    });
+  }
+
+  // Event box par lagaya hai, isliye naye buttons bhi kaam karenge.
   box.addEventListener("click", function (event) {
-    const button = event.target.closest("[data-geeta-add]");
-    if (!button) return;
+    const button = event.target.closest("button[data-geeta-add]");
+    if (!button || !box.contains(button)) return;
+
+    event.preventDefault();
 
     const card = button.closest("[data-geeta-card]");
     const qtyInput = card && card.querySelector("[data-geeta-qty]");
-    if (!qtyInput) return;
+    const qty = Number(qtyInput && qtyInput.value);
 
-    const qty = Number(qtyInput.value);
     if (!Number.isInteger(qty) || qty < 1 || qty > 999) {
       cartMessage.textContent = "कृपया मात्रा 1 से 999 के बीच लिखें।";
       return;
@@ -1025,48 +1084,14 @@ return `
     const key = button.getAttribute("data-geeta-code");
     const name = button.getAttribute("data-geeta-name");
 
-    cart.set(key, {
-      name: name,
-      qty: qty
-    });
-
+    cart.set(key, { name: name, qty: qty });
     renderCart();
   });
 
-  // Search results ko cart buttons ke saath decorate karein.
-  const observer = new MutationObserver(function () {
-    box.querySelectorAll("div").forEach(function (card) {
-      const medicineName = card.querySelector("b");
-      if (!medicineName || card.hasAttribute("data-geeta-card")) return;
-
-      const links = card.querySelectorAll("a");
-      if (!links.length) return;
-
-      const codeText = Array.from(card.childNodes)
-        .map(function (node) { return node.textContent || ""; })
-        .join(" ");
-
-      const codeMatch = codeText.match(/Code:\s*([^|]+)/);
-      const code = codeMatch ? codeMatch[1].trim() : "";
-      const name = medicineName.textContent.trim();
-      const key = code || name;
-
-      card.setAttribute("data-geeta-card", "1");
-
-      const controls = document.createElement("div");
-      controls.style.marginTop = "10px";
-      controls.innerHTML =
-        '<label>मात्रा: <input data-geeta-qty type="number" min="1" max="999" step="1" value="1" style="width:75px;padding:7px"></label> ' +
-        '<button type="button" data-geeta-add style="padding:8px 12px;background:#087f8c;color:white;border:0;border-radius:7px;cursor:pointer">कार्ट में जोड़ें</button>';
-
-      const addButton = controls.querySelector("[data-geeta-add]");
-      addButton.setAttribute("data-geeta-code", key);
-      addButton.setAttribute("data-geeta-name", name);
-      card.appendChild(controls);
-    });
-  });
-
+  const observer = new MutationObserver(decorateCards);
   observer.observe(box, { childList: true, subtree: true });
+
+  decorateCards();
   renderCart();
 })();
 </script>
