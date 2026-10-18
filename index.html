@@ -1043,6 +1043,9 @@ return `
       const button = document.createElement("button");
       button.type = "button";
       button.textContent = "कार्ट में जोड़ें";
+      button.setAttribute("data-geeta-add", "");
+      button.setAttribute("data-geeta-code", key);
+      button.setAttribute("data-geeta-name", name);
       button.style.cssText =
         "margin-left:8px;padding:8px 12px;background:#087f8c;" +
         "color:white;border:0;border-radius:7px;cursor:pointer";
